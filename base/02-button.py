@@ -10,7 +10,7 @@ class AppWindow(Gtk.Window):
     def __init__(self, app, title):
         super().__init__(application=app, title=title)
         self.set_size_request(200, 100)
-        button = Gtk.Button.new_with_mnemonic('_Close')  # 按住Alt+c 就会触发
+        button = Gtk.Button.new_with_mnemonic('H_ello _Close')  # 按住Alt+c 就会触发
         button.connect('clicked', self.on_button_clicked)
 
         button.set_relief(Gtk.ReliefStyle.NORMAL)
