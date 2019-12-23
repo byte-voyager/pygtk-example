@@ -15,9 +15,45 @@ class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_size_request(450, 550)
+        screen = Gdk.Screen.get_default()
+        visual = Gdk.Screen.get_rgba_visual(screen)
+        print(Gdk.Screen.is_composited(screen))
+        self.set_visual(visual)
+        self.set_app_paintable(True)
+
+        eventbox = Gtk.EventBox.new()
+        eventbox.set_above_child(False)
+
         drawingarea = Gtk.DrawingArea()
-        self.add(drawingarea)
+        eventbox.connect('motion-notify-event', self.on_motion)
+        eventbox.connect('button-press-event', self.on_press)
+        eventbox.set_events(Gdk.EventMask.POINTER_MOTION_MASK)
+        eventbox.add(drawingarea)
+
+        self.add(eventbox)
         drawingarea.connect('draw', self.draw)
+
+    def on_press(self, *args):
+        import datetime
+        print(str(args[1].type))
+
+        print('args', *args, len(args))
+        print('press', str(datetime.datetime.now()))
+
+    def on_motion(self, *args):
+        import datetime
+        print(args)
+        print(str(args[1].type))
+
+        # print(Gdk.EventMotion.state)
+        print(str(args[1].state))
+        if args[1].state == Gdk.ModifierType.BUTTON1_MASK:
+            print("你按下鼠标左键, dir(args[1])", dir(args[1]))
+            self.move(args[1].x_root, args[1].y_root)
+            print('x', args[1].x)
+
+        print('args', *args, len(args))
+        print('motion', str(datetime.datetime.now()))
 
     def triangle(self, ctx):
         ctx.move_to(SIZE, 0)
@@ -115,7 +151,7 @@ class Application(Gtk.Application):
     def do_activate(self):
         if not self.window:
             self.window = AppWindow(application=self,
-                                    title="Drawing Areas")
+                                    title="Drawing Areas", type=Gtk.WindowType.POPUP)
         self.window.show_all()
         self.window.present()
 
