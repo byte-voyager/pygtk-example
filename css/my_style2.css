@@ -14,6 +14,7 @@ label#label1 {
     font: 16px "Fira Code";
     padding: 100px;
     box-shadow: 0px 0px 5px black;
+    /*cursor-color: #FFFFFF;*/
 }
 
 label {

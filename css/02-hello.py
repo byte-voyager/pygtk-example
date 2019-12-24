@@ -48,6 +48,10 @@ class AppWindow(Gtk.ApplicationWindow):
         child1: Gtk.Label = self.get_children()[0]
         print("child1.get_text(): ", child1.get_text())
 
+    def do_configure_event(self, *args):
+        print("do_configure_event......", args)
+        # super().do_draw(*args)
+
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
