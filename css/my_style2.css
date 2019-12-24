@@ -1,0 +1,40 @@
+window {
+    font: 19px "Fira Code";
+    background: transparent;
+    /*opacity: 0.9*/
+}
+
+label#label1 {
+    background: blue;
+    text-shadow: 1px 1px 5px black;
+    color: #fff;
+    min-width: 200px;
+    min-height: 100px;
+    border-radius: 100px;
+    font: 16px "Fira Code";
+    padding: 100px;
+    box-shadow: 0px 0px 5px black;
+}
+
+label {
+    color: green;
+}
+
+/*
+label {
+   background-image: -gtk-gradient (linear,
+                                      0 0, 0 1,
+                                      color-stop(0, @yellow),
+                                      color-stop(0.2, @blue),
+                                      color-stop(1, #0f0));
+}
+
+
+
+**/
+
+#label1:focus {
+    color: red;
+    background-color: #b4940f;
+    font-size: 10px;
+}

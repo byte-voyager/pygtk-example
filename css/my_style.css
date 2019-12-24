@@ -1,0 +1,9 @@
+button {
+    background-image: url("face.png");
+    text-shadow: 1px 1px 5px black;
+    color: #fff;
+    border-radius: 10px;
+    font: 20px "Fira Code";
+    box-shadow: 0px 0px 5px black;
+}
+
