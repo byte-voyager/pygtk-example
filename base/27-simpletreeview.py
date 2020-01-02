@@ -28,9 +28,11 @@ class AppWindow(Gtk.ApplicationWindow):
                                    GObject.TYPE_INT,
                                    GObject.TYPE_STRING))
         for row in GroceryItem:
-            iter = store.append(None)
-            store.set(iter, BUY_IT, row[BUY_IT], QUANTITY, row[QUANTITY], PRODUCT,
-                      row[PRODUCT])
+            # 第一种方式
+            # iter = store.append(None)
+            # store.set(iter, BUY_IT, row[BUY_IT], QUANTITY, row[QUANTITY], PRODUCT,
+            #           row[PRODUCT])
+            store.append(row)
         treeview.set_model(store)
         scrolled_win = Gtk.ScrolledWindow.new(None, None)
         scrolled_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.EXTERNAL)
@@ -46,6 +48,8 @@ class AppWindow(Gtk.ApplicationWindow):
         treeview.append_column(column)
         renderer = Gtk.CellRendererText.new()
         column = Gtk.TreeViewColumn("Product", renderer, text=PRODUCT)
+        treeview.append_column(column)
+        column = Gtk.TreeViewColumn("产品", renderer, text=PRODUCT)
         treeview.append_column(column)
 
 
