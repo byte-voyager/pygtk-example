@@ -5,6 +5,7 @@ import os
 print('start')
 print(os.getpid())
 res = os.fork()
+os.execl()
 
 if res == 0:
     # 子进程执行完 父进程没有正确的获取子进程的退出状态 那么会导致子进程变为僵尸状态
