@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-
+import time
 import cairo
 import math
 import gi
@@ -75,6 +75,7 @@ class AppWindow(Gtk.ApplicationWindow):
         self.drawingarea.set_events(Gdk.EventMask.POINTER_MOTION_MASK|Gdk.EventMask.BUTTON_PRESS_MASK|Gdk.EventMask.BUTTON_RELEASE_MASK)
         self.drawingarea.connect('motion-notify-event', self.motion_notify_event_cb)
         self.drawingarea.connect('button-release-event', self.button_release)
+        self.connect("key-press-event",self.on_key_press_event)
         self.drawingarea.connect('draw', self.draw)
 
         self.start_x = 0
@@ -83,10 +84,15 @@ class AppWindow(Gtk.ApplicationWindow):
         self.x = 255
         self.y = 255
         self.start = False
+        self.cur_action = 0
+        self.arrow_action = []
 
     def button_release(self, *args):
         print('button release')
         self.start = False
+        self.arrow_action.append((self.start_x, self.start_y, self.x, self.y))
+        self.drawingarea.queue_draw()
+        self.cur_action = -1
 
     def motion_notify_event_cb(self, widget: Gtk.DrawingArea, event, data=None):
 
@@ -101,6 +107,7 @@ class AppWindow(Gtk.ApplicationWindow):
             self.x = event.x
             self.y = event.y
             widget.queue_draw()
+            self.cur_action = 0
             # self.move(args[1].x_root, args[1].y_root)
             # print('x', args[1].x)
             return False
@@ -156,6 +163,29 @@ class AppWindow(Gtk.ApplicationWindow):
         self.draw_shapes(ctx, x, y, False)
 
 
+
+    def on_key_press_event(self, widget, event):
+
+        # print("Key press on widget: ", widget)
+        # print("          Modifiers: ", event.state)
+        # print("      Key val, name: ", event.keyval, Gdk.keyval_name(event.keyval))
+
+        # check the event modifiers (can also use SHIFTMASK, etc)
+        ctrl = (event.state & Gdk.ModifierType.CONTROL_MASK)
+
+        # see if we recognise a keypress
+        if ctrl and event.keyval == Gdk.KEY_z:
+            print(self.arrow_action)
+            if self.arrow_action:
+                self.arrow_action.pop()
+            self.start_x = self.start_y = self.x = self.y = 0
+            self.drawingarea.queue_draw()
+
+        if ctrl and event.keyval == Gdk.KEY_s:
+            print(self.get_size())
+            pixbuf: GdkPixbuf.Pixbuf  = Gdk.pixbuf_get_from_window(self.get_window(), 0, 0,  *self.get_size())
+            pixbuf.savev(str(time.time())+".png", "png", '', '')
+
     def drawArrow(self, cr, sx, sy, ex, ey, color, size):
         '''Draw arrow.'''
         # Init.
@@ -187,7 +217,6 @@ class AppWindow(Gtk.ApplicationWindow):
         # Draw arrow head.
 
         angle = math.atan2(ey - sy, ex - sx) + math.pi # 根据反tan函数 传入对边和邻边 得到角度
-        print('angle', angle, angle-math.pi)
         x2 = ex - arrowSize * math.cos(angle - arrowAngle)
         y2 = ey - arrowSize * math.sin(angle - arrowAngle)
 
@@ -226,7 +255,10 @@ class AppWindow(Gtk.ApplicationWindow):
         # ctx.line_to(self.x+20, self.y)
         # ctx.stroke()
 
+        # if self.cur_action == 0:
         self.drawArrow(ctx, self.start_x, self.start_y, self.x, self.y, '#FF0000', 7)
+        for sx, sy, ex, ey in self.arrow_action:
+            self.drawArrow(ctx, sx, sy, ex, ey, '#FF0000', 7)
 
         # ctx.scale(WIDTH, HEIGHT)  # Normalizing the canvas
 
